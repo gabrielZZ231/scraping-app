@@ -1,4 +1,3 @@
-const fs = require("fs/promises");
 const path = require("path");
 const readline = require("node:readline/promises");
 const { stdin, stdout, stderr, argv } = require("node:process");
@@ -13,7 +12,6 @@ if (typeof stderr.setDefaultEncoding === "function") {
   stderr.setDefaultEncoding("utf8");
 }
 
-const OUTPUT_FILE_PATH = path.resolve(process.cwd(), "resultado.json");
 const MIN_REQUEST_INTERVAL_MS = 2500;
 
 const USER_AGENTS = [
@@ -101,41 +99,6 @@ function sleep(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
-async function loadResultHistory() {
-  try {
-    const content = await fs.readFile(OUTPUT_FILE_PATH, "utf-8");
-    const parsed = JSON.parse(content);
-
-    if (Array.isArray(parsed)) {
-      return parsed;
-    }
-
-    if (parsed && typeof parsed === "object") {
-      return [parsed];
-    }
-
-    return [];
-  } catch (error) {
-    if (error && error.code === "ENOENT") {
-      return [];
-    }
-
-    throw error;
-  }
-}
-
-async function appendResultToHistory(result) {
-  const history = await loadResultHistory();
-  history.push(result);
-
-  await fs.writeFile(
-    OUTPUT_FILE_PATH,
-    JSON.stringify(history, null, 2),
-    "utf-8",
-  );
-  return history.length;
-}
-
 async function waitForRateLimitWindow() {
   // Garante intervalo mínimo entre navegações para evitar rajadas de acesso.
   const elapsed = Date.now() - lastRequestAt;
@@ -180,15 +143,15 @@ async function runScraper() {
 
     const result = await productPage.extractProductData();
 
-    const totalItems = await appendResultToHistory({
+    const finalResult = {
       ...result,
       url: productUrl,
       coletadoEm: new Date().toISOString(),
-    });
+    };
 
-    console.log(
-      `Extração concluída. Registro adicionado em resultado.json. Total de itens: ${totalItems}.`,
-    );
+    console.log("Extração concluída. Resultado:");
+    console.log(JSON.stringify(finalResult, null, 2));
+
   } catch (error) {
     console.error("Falha ao executar o scraper:", error);
     process.exitCode = 1;
