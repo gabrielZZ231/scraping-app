@@ -40,6 +40,7 @@ O servidor permite consultas via HTTP e possui documentação interativa.
 - **Acessar API:**
   - **Interface Swagger:** `http://localhost:3000/api`
   - **Status da API:** `http://localhost:3000/`
+  - **Busca via URL:** `http://localhost:3000/scrape?target=NOME_OU_URL`
 
 ### 2. Ferramenta CLI
 Execute consultas rápidas diretamente pelo terminal.

@@ -11,44 +11,31 @@ export class ScraperController {
   @Get()
   @ApiOperation({ 
     summary: 'Extrair dados de produto',
-    description: 'Navega até a URL informada e tenta extrair título, preço, imagem e descrição via seletores CSS ou JSON-LD.'
+    description: 'Navega até a URL informada ou realiza uma busca por nome para extrair título, preço, imagem e descrição.'
   })
   @ApiQuery({ 
-    name: 'url', 
+    name: 'target', 
     required: true, 
     example: 'https://www.netshoes.com.br/p/tenis-puma-flyer-flex-bdp-masculino-PI3-0499-375?sellerId=0',
-    description: 'A URL da página do produto que deseja consultar.'
+    description: 'A URL da página do produto ou o nome para busca.'
   })
   @ApiOkResponse({ 
     description: 'Dados extraídos com sucesso.', 
     type: ProductResponseDto 
   })
   @ApiBadRequestResponse({ 
-    description: 'A URL não foi informada ou o formato é inválido.',
+    description: 'O alvo (URL ou nome) não foi informado.',
     type: ScrapeErrorDto
   })
   @ApiUnprocessableEntityResponse({ 
-    description: 'Falha técnica ao tentar acessar ou extrair dados da URL.',
+    description: 'Falha técnica ao tentar acessar ou extrair dados.',
     type: ScrapeErrorDto
   })
-  async getScrape(@Query('url') url: string) {
-    if (!url) {
-      throw new BadRequestException('A URL é obrigatória via query parameter.');
+  async getScrape(@Query('target') target: string) {
+    if (!target) {
+      throw new BadRequestException('O parâmetro "target" (URL ou nome) é obrigatório.');
     }
 
-    if (!this.isValidUrl(url)) {
-      throw new BadRequestException('A URL informada possui um formato inválido.');
-    }
-
-    return await this.scraperService.scrapeProduct(url);
-  }
-
-  private isValidUrl(url: string): boolean {
-    try {
-      new URL(url);
-      return true;
-    } catch (e) {
-      return false;
-    }
+    return await this.scraperService.scrapeProduct(target);
   }
 }
