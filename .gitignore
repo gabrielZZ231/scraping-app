@@ -1,9 +1,23 @@
-
-# Playwright
+# Dependências
 node_modules/
-/test-results/
-/playwright-report/
-/blob-report/
-/playwright/.cache/
-/playwright/.auth/
+dist/
+
+# TypeScript
+*.tsbuildinfo
+tsconfig.tsbuildinfo
+
+# Playwright / Testes
+test-results/
+playwright-report/
+blob-report/
+playwright/.cache/
+playwright/.auth/
+
+# Ambiente e Logs
 .env
+*.log
+npm-debug.log*
+
+# Sistema
+.DS_Store
+Thumbs.db

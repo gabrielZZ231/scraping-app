@@ -4,20 +4,23 @@ FROM mcr.microsoft.com/playwright:v1.59.1-jammy
 # Definir diretório de trabalho
 WORKDIR /app
 
+# Garantir que estamos no ambiente correto para o build
+ENV NODE_ENV=development
+
 # Copiar arquivos de dependências
 COPY package*.json ./
 
-# Instalar dependências do Node.js
+# Instalar TODAS as dependências
 RUN npm install
 
-# Copiar o restante do código (incluindo os arquivos .js que são o núcleo)
+# Copiar o restante do código
 COPY . .
 
-# Build do NestJS (TypeScript para a infraestrutura)
+# Executar o build do TypeScript
 RUN npm run build
 
 # Expor a porta que o NestJS usa
 EXPOSE 3000
 
 # Comando para iniciar o servidor
-CMD ["npm", "run", "start:prod"]
+CMD ["node", "dist/main.js"]
