@@ -1,94 +1,85 @@
-# Scraper API & CLI
+# 🕷️ Scraping App Modular 2.0 (NestJS + Playwright)
 
-Uma solução completa de **Web Scraping** para extração de dados de produtos, construída com **Node.js** e **Playwright**. O projeto utiliza o padrão **Page Object Model (POM)** para garantir modularidade e facilidade de manutenção.
+Uma solução profissional de **Web Scraping** para extração de dados de produtos, construída com **NestJS**, **Playwright** e **TypeScript**. O projeto utiliza o padrão **Page Object Model (POM)** e uma arquitetura modularizada para máxima manutenibilidade e escalabilidade.
 
-## 🚀 Principais Tecnologias
+---
 
-- **Node.js**: Ambiente de execução.
-- **Playwright**: Automação de navegador para renderização de páginas dinâmicas.
-- **NestJS**: Framework para a disponibilização da API REST.
-- **Swagger**: Documentação interativa da API.
-- **Jest**: Framework de testes unitários.
+## 🏗️ Arquitetura do Projeto
 
-## 📋 Requisitos
+A estrutura segue os princípios de separação de responsabilidades (SoC) e injeção de dependências:
 
-- Node.js v18+
-- npm v9+
+- **`src/common/`**: Lógica de infraestrutura compartilhada.
+    - `scraping/`: Contém a `BasePage` (abstração de navegação com retries, backoff exponencial e delays aleatórios).
+- **`src/modules/`**: Módulos funcionais isolados.
+    - `browser/`: Gerenciamento centralizado do ciclo de vida do navegador (Singleton via NestJS).
+    - `product-scraper/`: Lógica específica para extração de dados de produtos (Título, Preço, Imagem, Descrição).
+- **`src/cli/`**: Interface de linha de comando para execuções rápidas sem necessidade da API HTTP.
+- **`src/main.ts`**: Ponto de entrada do servidor NestJS.
+
+---
+
+## 🚀 Funcionalidades Principais
+
+- **Resiliência Avançada**: Implementação de *Retry* automático e *Exponential Backoff* para lidar com instabilidades de rede.
+- **Detecção de Bloqueios**: Monitoramento proativo de Captchas e telas de "Acesso Negado".
+- **Evasão de Bots**: Rotação de *User-Agents*, *viewports* realistas e delays humanos aleatórios.
+- **Fallback Inteligente**: Extração visual via seletores CSS combinada com parsing de dados estruturados **JSON-LD**.
+- **API RESTful**: Documentação interativa completa via **Swagger**.
+
+---
 
 ## 🛠️ Instalação e Configuração
 
-1. Instale as dependências:
+1. **Instalar Dependências**:
    ```bash
    npm install
    ```
 
-2. Configure o ambiente:
-   Crie um arquivo `.env` na raiz do projeto com o seguinte conteúdo:
+2. **Configurar Ambiente**:
+   Crie um arquivo `.env` na raiz do projeto:
    ```env
    PORT=3000
    ```
 
-## 💻 Como Executar
+---
+
+## 💻 Como Utilizar
 
 ### 1. Servidor API (NestJS)
-O servidor permite consultas via HTTP e possui documentação interativa.
+Ideal para integração com outros sistemas via HTTP.
 
 - **Iniciar Servidor:**
   ```bash
   npm run start:dev
   ```
-- **Acessar API:**
-  - **Interface Swagger:** `http://localhost:3000/api`
-  - **Status da API:** `http://localhost:3000/`
-  - **Busca via URL:** `http://localhost:3000/scrape?target=NOME_OU_URL`
+- **Interface Swagger:** [http://localhost:3000/api](http://localhost:3000/api)
+- **Endpoint de Extração:** `GET /scrape?target=URL_OU_NOME`
 
-### 2. Ferramenta CLI
-Execute consultas rápidas diretamente pelo terminal.
+### 2. Interface CLI (Linha de Comando)
+Ideal para extrações rápidas diretamente no terminal.
 
-- **Busca por nome ou URL:**
+- **Executar Busca:**
   ```bash
-  node src/index.js "link-do-produto-ou-nome"
+  npm run cli "nome do produto"
+  # OU
+  npm run cli "https://url-do-produto.com.br"
   ```
-  *O resultado será exibido em formato JSON formatado.*
+  *O resultado será exibido em formato JSON estruturado diretamente no stdout.*
 
-## 🐳 Docker (Recomendado)
-
-A maneira mais fácil de executar o projeto, garantindo que todas as dependências do navegador estejam instaladas.
-
-1. **Construir e Iniciar os Containers:**
-   ```bash
-   docker-compose up --build -d
-   ```
-
-2. **Acessar a API:**
-   - A API estará disponível em `http://localhost:3000/api`
-
-3. **Ver Logs:**
-   ```bash
-   docker-compose logs -f
-   ```
-
-4. **Parar os Containers:**
-   ```bash
-   docker-compose down
-   ```
+---
 
 ## 🧪 Testes Automatizados
 
-Para validar a lógica de extração e os mecanismos de fallback:
+Valide a integridade da extração e os mecanismos de fallback:
 ```bash
 npm test
 ```
 
+---
+
 ## ⚙️ Características Técnicas
 
-- **Resiliência**: Implementação de *Retry* com *Exponential Backoff* para lidar com falhas de rede.
-- **Evasão de Bloqueios**: Rotação de *User-Agents* e detecção proativa de Captchas.
-- **Fallback Inteligente**: Caso os seletores visuais falhem devido a mudanças no layout da página, o sistema tenta extrair dados estruturados via **JSON-LD**.
-- **Processamento Real-time**: A aplicação não persiste dados, garantindo que as informações extraídas sejam sempre as mais atuais da página.
-
-## 📂 Estrutura de Pastas
-
-- `src/`: Core da aplicação (Navegação, Extração e Servidor).
-- `tests/`: Testes automatizados.
-- `prints/`: Capturas de tela das evidências de execução.
+- **NestJS v11+**: Injeção de dependências e organização modular.
+- **Playwright v1.59+**: Automação robusta com suporte a Webkit, Chromium e Firefox.
+- **Swagger**: Documentação automática dos endpoints.
+- **TypeScript**: Tipagem estática em todo o core da aplicação.

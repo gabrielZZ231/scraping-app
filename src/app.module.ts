@@ -1,11 +1,11 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { ScraperController } from './scraper/scraper.controller';
-import { ScraperService } from './scraper/scraper.service';
+import { ProductScraperModule } from './modules/product-scraper/product-scraper.module';
+import { BrowserModule } from './modules/browser/browser.module';
 
 @Module({
-  imports: [],
-  controllers: [AppController, ScraperController],
-  providers: [ScraperService],
+  imports: [
+    BrowserModule,
+    ProductScraperModule,
+  ],
 })
 export class AppModule {}

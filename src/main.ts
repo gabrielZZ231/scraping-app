@@ -12,9 +12,9 @@ async function bootstrap() {
 
   const config = new DocumentBuilder()
     .setTitle('Scraper API')
-    .setDescription('API para extração de dados de produtos (Título, Preço, Imagem e Descrição) de páginas web.')
-    .setVersion('1.0')
-    .addTag('Scraper')
+    .setDescription('API modular para extração de dados de produtos de páginas web.')
+    .setVersion('2.0')
+    .addTag('Product Scraper')
     .build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document);

@@ -1,4 +1,4 @@
-const ProductPage = require("../src/ProductPage");
+const { ProductPage } = require("../src/modules/product-scraper/product-page");
 
 function createMockPage({
   textBySelector = {},

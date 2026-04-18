@@ -14,7 +14,8 @@
     "skipLibCheck": true,
     "strict": false,
     "allowJs": true,
-    "esModuleInterop": true
+    "esModuleInterop": true,
+    "types": ["node"]
   },
   "include": ["src/**/*"],
   "exclude": ["node_modules", "dist"]
