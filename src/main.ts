@@ -11,8 +11,8 @@ async function bootstrap() {
   app.useGlobalPipes(new ValidationPipe());
 
   const config = new DocumentBuilder()
-    .setTitle('Netshoes Scraper API')
-    .setDescription('API para extração de dados de produtos do domínio netshoes.com.br usando Playwright.')
+    .setTitle('Scraper API')
+    .setDescription('API para extração de dados de produtos (Título, Preço, Imagem e Descrição) de páginas web.')
     .setVersion('1.0')
     .addTag('Scraper')
     .build();

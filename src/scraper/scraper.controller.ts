@@ -10,25 +10,25 @@ export class ScraperController {
 
   @Get()
   @ApiOperation({ 
-    summary: 'Extrair dados de produto da Netshoes',
-    description: 'Navega até a URL informada do site Netshoes e extrai título, preço, imagem e descrição.'
+    summary: 'Extrair dados de produto',
+    description: 'Navega até a URL informada e tenta extrair título, preço, imagem e descrição via seletores CSS ou JSON-LD.'
   })
   @ApiQuery({ 
     name: 'url', 
     required: true, 
     example: 'https://www.netshoes.com.br/p/tenis-puma-flyer-flex-bdp-masculino-PI3-0499-375?sellerId=0',
-    description: 'A URL direta da página do produto no domínio netshoes.com.br'
+    description: 'A URL da página do produto que deseja consultar.'
   })
   @ApiOkResponse({ 
     description: 'Dados extraídos com sucesso.', 
     type: ProductResponseDto 
   })
   @ApiBadRequestResponse({ 
-    description: 'URL ausente ou de domínio não permitido (fora de netshoes.com.br).',
+    description: 'A URL não foi informada ou o formato é inválido.',
     type: ScrapeErrorDto
   })
   @ApiUnprocessableEntityResponse({ 
-    description: 'Falha técnica ao navegar ou extrair dados da página.',
+    description: 'Falha técnica ao tentar acessar ou extrair dados da URL.',
     type: ScrapeErrorDto
   })
   async getScrape(@Query('url') url: string) {
@@ -36,20 +36,17 @@ export class ScraperController {
       throw new BadRequestException('A URL é obrigatória via query parameter.');
     }
 
-    if (!this.isValidNetshoesUrl(url)) {
-      throw new BadRequestException('Apenas links do domínio netshoes.com.br são permitidos.');
+    if (!this.isValidUrl(url)) {
+      throw new BadRequestException('A URL informada possui um formato inválido.');
     }
 
     return await this.scraperService.scrapeProduct(url);
   }
 
-  private isValidNetshoesUrl(url: string): boolean {
+  private isValidUrl(url: string): boolean {
     try {
-      const parsedUrl = new URL(url);
-      const host = parsedUrl.hostname.toLowerCase();
-      
-      // Valida se o host termina com netshoes.com.br
-      return host === 'netshoes.com.br' || host.endsWith('.netshoes.com.br');
+      new URL(url);
+      return true;
     } catch (e) {
       return false;
     }

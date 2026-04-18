@@ -15,7 +15,7 @@ export class ProductResponseDto {
 }
 
 export class ScrapeErrorDto {
-  @ApiProperty({ example: 'Apenas links do domínio netshoes.com.br são permitidos.' })
+  @ApiProperty({ example: 'A URL informada possui um formato inválido.' })
   message: string;
 
   @ApiProperty({ example: 'Bad Request' })
