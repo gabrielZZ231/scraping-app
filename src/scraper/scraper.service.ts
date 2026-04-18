@@ -30,7 +30,11 @@ export class ScraperService implements OnModuleDestroy {
       await productPage.Maps(url);
       const data = await productPage.extractProductData();
 
-      return data;
+      return {
+        ...data,
+        url,
+        coletadoEm: new Date().toISOString(),
+      };
     } catch (error) {
       console.error(`Erro ao extrair dados da URL ${url}:`, error.message);
       throw new UnprocessableEntityException(`Falha na extração dos dados: ${error.message}`);
