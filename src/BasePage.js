@@ -1,4 +1,13 @@
+/**
+ * Base class for all page objects, providing common navigation and utility methods.
+ */
 class BasePage {
+  /**
+   * @param {import('playwright').Page} page - The Playwright page instance.
+   * @param {Object} [options={}] - Configuration options.
+   * @param {number} [options.maxRetries=3] - Maximum number of retries for navigation.
+   * @param {number} [options.baseDelayMs=1000] - Base delay for backoff mechanism.
+   */
   constructor(page, options = {}) {
     if (!page) {
       throw new Error(
@@ -11,6 +20,12 @@ class BasePage {
     this.baseDelayMs = options.baseDelayMs ?? 1000;
   }
 
+  /**
+   * Navigates to a URL with retry and backoff logic.
+   * @param {string} url - The URL to navigate to.
+   * @returns {Promise<import('playwright').Response|null>} The page response.
+   * @throws {Error} If navigation fails after all retries.
+   */
   async Maps(url) {
     if (typeof url !== "string" || !url.trim()) {
       throw new Error("A URL informada para navegação é inválida.");
@@ -48,14 +63,31 @@ class BasePage {
     );
   }
 
+  /**
+   * Pauses execution for a specified duration.
+   * @param {number} ms - The number of milliseconds to sleep.
+   * @returns {Promise<void>}
+   */
   sleep(ms) {
     return new Promise((resolve) => setTimeout(resolve, ms));
   }
 
+  /**
+   * Generates a random integer between min and max.
+   * @param {number} min - Minimum value.
+   * @param {number} max - Maximum value.
+   * @returns {number}
+   */
   randomInt(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
   }
 
+  /**
+   * Pauses execution for a random duration within a range.
+   * @param {number} minMs - Minimum duration.
+   * @param {number} maxMs - Maximum duration.
+   * @returns {Promise<void>}
+   */
   async randomDelay(minMs, maxMs) {
     const delay = this.randomInt(minMs, maxMs);
     await this.sleep(delay);

@@ -1,11 +1,23 @@
 const BasePage = require("./BasePage");
 
+/**
+ * Specialized page object for extracting product data from Netshoes.
+ * @extends BasePage
+ */
 class ProductPage extends BasePage {
+  /**
+   * @param {import('playwright').Page} page - The Playwright page instance.
+   * @param {Object} [options={}] - Configuration options.
+   */
   constructor(page, options = {}) {
     super(page, options);
     this.productJsonLdCache = null;
   }
 
+  /**
+   * Extracts product data (title, price, image, description) from the current page.
+   * @returns {Promise<{titulo: string|null, preco: string|null, imagem: string|null, descricao: string|null}>}
+   */
   async extractProductData() {
     await this.page.waitForLoadState("domcontentloaded");
     await this.randomDelay(400, 900);
@@ -31,6 +43,11 @@ class ProductPage extends BasePage {
     };
   }
 
+  /**
+   * Checks if the page is blocked by captcha or automation protection.
+   * @throws {Error} If a block is detected.
+   * @returns {Promise<void>}
+   */
   async assertNoAutomationOrCaptchaBlock() {
     // Interrompe execução quando a página indica captcha ou bloqueio explícito.
     const pageTitle = await this.page.title();
@@ -48,6 +65,10 @@ class ProductPage extends BasePage {
     }
   }
 
+  /**
+   * Extracts the product price using CSS selectors or JSON-LD fallback.
+   * @returns {Promise<string|null>}
+   */
   async getPriceValue() {
     const directPrice = await this.getTextByPriority([
       ".price-box__saleInCents .saleInCents-value",
@@ -68,6 +89,10 @@ class ProductPage extends BasePage {
     return this.formatPriceFromNumber(lowPrice, currency);
   }
 
+  /**
+   * Extracts the product image URL using CSS selectors or JSON-LD fallback.
+   * @returns {Promise<string|null>}
+   */
   async getImageValue() {
     const directImage = await this.getAttributeByPriority(
       [
@@ -99,6 +124,10 @@ class ProductPage extends BasePage {
     return this.normalizeText(jsonLdProduct?.image || null) || null;
   }
 
+  /**
+   * Extracts the product description using CSS selectors or JSON-LD fallback.
+   * @returns {Promise<string|null>}
+   */
   async getDescriptionValue() {
     const directDescription = await this.getTextByPriority([
       "p.features--description",
@@ -115,11 +144,19 @@ class ProductPage extends BasePage {
     return this.normalizeText(jsonLdProduct?.description || null) || null;
   }
 
+  /**
+   * Extracts the title from JSON-LD script tags.
+   * @returns {Promise<string|null>}
+   */
   async getTitleFromJsonLd() {
     const jsonLdProduct = await this.getProductFromJsonLd();
     return this.normalizeText(jsonLdProduct?.name || null) || null;
   }
 
+  /**
+   * Retrieves the Product node from JSON-LD script tags.
+   * @returns {Promise<Object|null>}
+   */
   async getProductFromJsonLd() {
     if (this.productJsonLdCache) {
       return this.productJsonLdCache;
@@ -152,6 +189,11 @@ class ProductPage extends BasePage {
     return null;
   }
 
+  /**
+   * Finds a 'Product' type node in a JSON-LD object.
+   * @param {Object} jsonLd - Parsed JSON-LD content.
+   * @returns {Object|null}
+   */
   findProductNode(jsonLd) {
     if (!jsonLd || typeof jsonLd !== "object") {
       return null;
@@ -182,6 +224,11 @@ class ProductPage extends BasePage {
     return null;
   }
 
+  /**
+   * Tries to get text content from a list of selectors by priority.
+   * @param {string[]} selectors - Array of CSS selectors.
+   * @returns {Promise<string|null>}
+   */
   async getTextByPriority(selectors) {
     // Tenta os seletores em ordem até encontrar um valor válido.
     for (const selector of selectors) {
@@ -203,6 +250,12 @@ class ProductPage extends BasePage {
     return null;
   }
 
+  /**
+   * Tries to get an attribute value from a list of selectors by priority.
+   * @param {string[]} selectors - Array of CSS selectors.
+   * @param {string} attribute - Attribute name.
+   * @returns {Promise<string|null>}
+   */
   async getAttributeByPriority(selectors, attribute) {
     for (const selector of selectors) {
       try {
@@ -224,6 +277,11 @@ class ProductPage extends BasePage {
     return null;
   }
 
+  /**
+   * Normalizes text by trimming and collapsing whitespace.
+   * @param {string} value - Text to normalize.
+   * @returns {string}
+   */
   normalizeText(value) {
     if (typeof value !== "string") {
       return "";
@@ -232,6 +290,11 @@ class ProductPage extends BasePage {
     return value.replace(/\s+/g, " ").trim();
   }
 
+  /**
+   * Normalizes price strings.
+   * @param {string} value - Price text to normalize.
+   * @returns {string|null}
+   */
   normalizePrice(value) {
     // Normaliza variações de preço (texto com R$ ou valor numérico cru).
     const text = this.normalizeText(value || "");
@@ -252,6 +315,11 @@ class ProductPage extends BasePage {
     return this.formatPriceFromNumber(numeric, "BRL");
   }
 
+  /**
+   * Parses a numeric value from a string.
+   * @param {string} value - String containing a number.
+   * @returns {number|null}
+   */
   parseNumber(value) {
     if (value === null || value === undefined) {
       return null;
@@ -282,6 +350,12 @@ class ProductPage extends BasePage {
     return Number.isFinite(parsed) ? parsed : null;
   }
 
+  /**
+   * Formats a number as a currency string.
+   * @param {number|string} value - Numeric value.
+   * @param {string} [currency='BRL'] - Currency code.
+   * @returns {string|null}
+   */
   formatPriceFromNumber(value, currency = "BRL") {
     const amount = this.parseNumber(value);
     if (amount === null) {
