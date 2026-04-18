@@ -8,7 +8,7 @@ Nesta seção, estão as evidências da execução do scraper através do termin
 
 ### Exemplo de Saída no Terminal
 > Print do terminal mostrando a execução e a confirmação de extração.
-![Execução CLI](./prints/output-terminal-sucesso.png)
+![Execução CLI](./prints/output-cli-sucesso.png)
 
 ---
 
