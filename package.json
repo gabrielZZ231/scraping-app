@@ -7,7 +7,7 @@
     "test": "jest",
     "build": "tsc",
     "start:dev": "nodemon --watch 'src/**/*.ts' --watch 'src/**/*.js' --exec 'ts-node' src/main.ts",
-    "start:prod": "node dist/src/main.js"
+    "start:prod": "node dist/main.js"
   },
   "jest": {
     "testMatch": [

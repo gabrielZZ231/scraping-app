@@ -51,6 +51,28 @@ Execute consultas rápidas diretamente pelo terminal.
   ```
   *O resultado será exibido em formato JSON formatado.*
 
+## 🐳 Docker (Recomendado)
+
+A maneira mais fácil de executar o projeto, garantindo que todas as dependências do navegador estejam instaladas.
+
+1. **Construir e Iniciar os Containers:**
+   ```bash
+   docker-compose up --build -d
+   ```
+
+2. **Acessar a API:**
+   - A API estará disponível em `http://localhost:3000/api`
+
+3. **Ver Logs:**
+   ```bash
+   docker-compose logs -f
+   ```
+
+4. **Parar os Containers:**
+   ```bash
+   docker-compose down
+   ```
+
 ## 🧪 Testes Automatizados
 
 Para validar a lógica de extração e os mecanismos de fallback:
