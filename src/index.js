@@ -82,7 +82,7 @@ async function runScraper() {
     console.log("Iniciando extração da página...");
     const productPage = new ProductPage(page);
     await productPage.Maps(productUrl);
-    const data = await productPage.extractProductPage ? await productPage.extractProductData() : null;
+    const data = await productPage.extractProductData();
 
     if (!data) {
         throw new Error("Falha ao extrair dados da página.");
